@@ -17,6 +17,13 @@ This is currently only possible for already saved notebooks, not while still edi
 ## Approach
 Reads the ``.ipynb`` file as JSON, searches for code cells with function definitions (which are note commented out). Adds an auto-generated docstring for these functions and writes the JSON again as ``.ipynb``.
 
+## Usage
+1. Pull the repository
+2. Run ``python main.py --in-notebook /path/to/your/notebook.ipynb``
+3. The commented file will be output to ``/path/to/your/notebook_documented.ipynb``
+4. Go through the commented file, looking for comments starting with ``# TODO:``, which will indicate which docstrings will need attention.
+5. After having edited the docstrings as needed, replace your original notebook with the now commented one.
+
 ## TODOs
 
 ### Definitely required features
