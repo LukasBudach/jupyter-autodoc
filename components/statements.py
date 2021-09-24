@@ -45,12 +45,12 @@ class FunctionDefinitionComponent(StatementComponent):
         comment_component = None
 
         if comment_start == -1:
-            function_def_component = FunctionDefinitionComponent.partial_from_code(code)
+            function_def_component = FunctionDefinitionComponent.partial_from_code(code).with_id(self.get_id())
         elif comment_start > first_non_whitespace:
-            function_def_component = FunctionDefinitionComponent.partial_from_code(code)
+            function_def_component = FunctionDefinitionComponent.partial_from_code(code).with_id(self.get_id())
             comment_component = CommentComponent.from_code(code[comment_start:], inline=True)
         else:
-            function_def_component = FunctionDefinitionComponent.partial_from_code('')
+            function_def_component = FunctionDefinitionComponent.partial_from_code('').with_id(self.get_id())
             comment_component = CommentComponent.from_code(code)
 
         if comment_component is None:

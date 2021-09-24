@@ -26,9 +26,4 @@ class MultilineCommentComponent(CommentComponent):
             self._incomplete = True
 
     def add_line(self, code):
-        self._code += code
-        self._code = self._code.strip()
-        if self._code[-3:] == '"""':
-            self._incomplete = False
-
-        return self
+        return MultilineCommentComponent.from_code(code).with_id(self.get_id())
