@@ -28,10 +28,12 @@ Reads the ``.ipynb`` file as JSON, searches for code cells with function definit
 
 ### Definitely required features
 - [ ] Allow for overwriting existing notebook instead of generating new one
-- [ ] Skip adding docstrings for already commented functions
+- [x] Skip adding docstrings for already commented functions
 - [ ] Analyze whether there actually is a return value
 - [ ] Analyze whether errors are explicitly raised in a function, add them to docstring
 - [ ] Use type hints in function definition to fill in type fields where possible
+- [ ] Add tests
+- [ ] Code Refactoring
 
 ### Optional features if requested/needed
 - [ ] Analyze existing comments for docstring compliance and extend/replace them accordingly

@@ -47,9 +47,14 @@ class FunctionCell(CodeCell):
 
     def get_function_definitions(self):
         defs = list()
+        has_comment = list()
         incomplete_def = False
+        last_was_def_end = False
         open_def = list()
         for i, line in enumerate(self._celldict['source']):
+            if last_was_def_end:
+                has_comment.append('"""' in line)
+                last_was_def_end = False
             if incomplete_def:
                 open_def.append(line)
                 if line.find(')') != -1:
@@ -57,6 +62,7 @@ class FunctionCell(CodeCell):
                     defs.append(''.join(open_def).replace('\n', ''))
                     open_def = list()
                     self._function_lines.append(i + 1)
+                    last_was_def_end = True
             if re.search(r'def', line) and not re.match(r'\t* *#.*def', line):
                 if line.find(')') == -1:
                     incomplete_def = True
@@ -64,7 +70,11 @@ class FunctionCell(CodeCell):
                 else:
                     defs.append(line)
                     self._function_lines.append(i + 1)
-        return [FunctionDefinition(d) for d in defs]
+                    last_was_def_end = True
+        def_objects = list()
+        for i in range(len(defs)):
+            def_objects.append(FunctionDefinition(defs[i], has_comment[i]))
+        return def_objects
 
     def insert_function_docstrings(self, docstrings):
         new_source = self._celldict['source'][:self._function_lines[0]]
@@ -79,12 +89,13 @@ class FunctionCell(CodeCell):
 
 
 class FunctionDefinition:
-    def __init__(self, def_line):
+    def __init__(self, def_line, has_comment):
         code_start = def_line.find('def')
         self._whitespace = def_line[:code_start]
         self._fname = def_line[def_line.find(' ', code_start) + 1 : def_line.find('(')]
         self._params = def_line[def_line.find('(') + 1 : def_line.find(')')].split(',')
         self._params = [p.strip() for p in self._params if p not in ['', ' ']]
+        self._has_comment = has_comment
 
     def __str__(self):
         return self.__repr__()
@@ -93,6 +104,8 @@ class FunctionDefinition:
         return 'Function definition: {}'.format(str(self.__dict__))
 
     def generate_docstring(self):
+        if self._has_comment:
+            return ''
         docstr = '{}# TODO: Fill out auto-generated docstring\n'.format(self._whitespace)
         docstr += '    {}""" Description of what function {} does. Can be multiline.\n'.format(self._whitespace, self._fname)
         for p in self._params:
