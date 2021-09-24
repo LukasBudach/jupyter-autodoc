@@ -11,12 +11,20 @@ class StatementComponent(BaseComponent):
         first_non_whitespace = len(re.match(r'\s*', code, re.UNICODE).group(0))
         if code[first_non_whitespace : first_non_whitespace + 3] == 'def':
             return FunctionDefinitionComponent(code)
+        if code[first_non_whitespace : first_non_whitespace + 6] == 'return':
+            return ReturnComponent(code)
         else:
             return StatementComponent(code)
 
     def __init__(self, code):
         super().__init__(code)
         self._code = code[len(self._whitespace) : code.find('#') if code.find('#') > 0 else len(code)].strip()
+
+
+class ReturnComponent(StatementComponent):
+    """ Currently only an alias for StatementComponent to more easily identify functions that have return statements.
+    """
+    COMPONENTTYPE = 'ReturnComponent'
 
 
 class FunctionDefinitionComponent(StatementComponent):
