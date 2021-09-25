@@ -36,6 +36,7 @@ class FunctionDefinitionComponent(StatementComponent):
 
     def __init__(self, code, partial_def=False):
         super().__init__(code)
+        self._fname = None
         if not partial_def:
             # if we don't already know that this is only part of a function definition, we must be in the first line
             self._fname = self._code[self._code.find(' ') + 1: self._code.find('(')]
@@ -46,6 +47,12 @@ class FunctionDefinitionComponent(StatementComponent):
             self._params = self._code[self._code.find('(') + 1: self._code.find(')')].split(',')
         self._params = [p.strip() for p in self._params if p not in ['', ' ']]
 
+    def get_params(self):
+        return self._params
+
+    def get_func_name(self):
+        return self._fname
+
     def add_line(self, code):
         comment_start = code.find('#')
         first_non_whitespace = len(re.match(r'\s*', code, re.UNICODE).group(0))
@@ -53,15 +60,15 @@ class FunctionDefinitionComponent(StatementComponent):
         comment_component = None
 
         if comment_start == -1:
-            function_def_component = FunctionDefinitionComponent.partial_from_code(code).with_id(self.get_id())
+            function_def_component = FunctionDefinitionComponent.partial_from_code(code).with_id(self.get_id()).with_part_id(self._part_id + 1)
         elif comment_start > first_non_whitespace:
-            function_def_component = FunctionDefinitionComponent.partial_from_code(code).with_id(self.get_id())
+            function_def_component = FunctionDefinitionComponent.partial_from_code(code).with_id(self.get_id()).with_part_id(self._part_id + 1)
             comment_component = CommentComponent.from_code(code[comment_start:], inline=True)
         else:
             function_def_component = FunctionDefinitionComponent.partial_from_code('').with_id(self.get_id())
             comment_component = CommentComponent.from_code(code)
 
         if comment_component is None:
-            return function_def_component
+            return (function_def_component,)
         else:
             return function_def_component, comment_component
