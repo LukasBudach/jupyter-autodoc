@@ -15,6 +15,9 @@ class CommentComponent(BaseComponent):
         if inline:
             self._whitespace = '  '
 
+    def is_inline(self):
+        return self._inline
+
 
 class MultilineCommentComponent(CommentComponent):
     COMPONENTTYPE = 'MultilineCommentComponent'
@@ -27,3 +30,6 @@ class MultilineCommentComponent(CommentComponent):
 
     def add_line(self, code):
         return (MultilineCommentComponent.from_code(code).with_id(self.get_id()).with_part_id(self._part_id + 1),)
+
+    def is_incomplete(self):
+        return self._incomplete

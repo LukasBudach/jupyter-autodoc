@@ -53,6 +53,9 @@ class FunctionDefinitionComponent(StatementComponent):
     def get_func_name(self):
         return self._fname
 
+    def is_incomplete(self):
+        return self._incomplete
+
     def add_line(self, code):
         comment_start = code.find('#')
         first_non_whitespace = len(re.match(r'\s*', code, re.UNICODE).group(0))
