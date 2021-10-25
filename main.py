@@ -141,13 +141,19 @@ def main(args):
             docstrings = [fd.generate_docstring() for fd in function_definitions]
             c.insert_function_docstrings(docstrings)
 
-    out_notebook = args.in_notebook.parent / '{}_documented.ipynb'.format(args.in_notebook.stem)
-    write_updated_cells(args.in_notebook, out_notebook, cells)
+    if args.out_notebook is None:
+        args.out_notebook = args.in_notebook.parent / '{}_documented.ipynb'.format(args.in_notebook.stem)
+    args.out_notebook.parent.mkdir(exist_ok=True, parents=True)
+    write_updated_cells(args.in_notebook, args.out_notebook.with_suffix('.ipynb'), cells)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('--in-notebook', type=Path)
+    parser.add_argument('--in-notebook', type=Path, required=True, help='Notebook to take as input and add docstring '
+                                                                        'stubs to.')
+    parser.add_argument('--out-notebook', type=Path, required=False, help='Notebook to save the result to. Will write'
+                                                                          'to %original notebook name"_documented if '
+                                                                          'not set.')
 
     main(parser.parse_args())
