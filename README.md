@@ -1,4 +1,5 @@
 # Jupyter Autodoc Project
+[![Tests](https://github.com/LukasBudach/jupyter-autodoc/actions/workflows/python-tests.yml/badge.svg?branch=main)](https://github.com/LukasBudach/jupyter-autodoc/actions/workflows/python-tests.yml)
 ## Purpose
 Provides functionality to automatically generate docstrings of the following format in jupyter notebooks.
 ```
